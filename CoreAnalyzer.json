@@ -1,0 +1,1424 @@
+{
+  "name": "CoreAnalyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "return {\n  userId: $input.item.json.message.chat.id.toString(),\n  userMessage: $input.item.json.message.text,\n  userName: $input.item.json.message.chat.first_name || \"User\",\n  timestamp: new Date().toLocaleString()\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2768,
+        -940
+      ],
+      "id": "6201c7ff-3968-436a-9dcd-9dccbee897f7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70",
+          "mode": "list",
+          "cachedResultName": "DATA BASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "userId",
+              "lookupValue": "={{ $json.userId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2544,
+        -940
+      ],
+      "id": "86e57f4b-32ff-4de0-b10a-61ef4cdee1ea",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VNhfS6YTTbCjR12v",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.conversationStage }}",
+                    "rightValue": "interview",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ca7dc506-754f-4997-bd0c-0c26164c5bce"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4a3fa98f-7866-4a6e-87f6-26af01cf0755",
+                    "leftValue": "={{ $json.conversationStage }}",
+                    "rightValue": "analysis",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8884d784-4534-4843-a6ef-adc2a248d555",
+                    "leftValue": "{{ $json.conversationStage }}",
+                    "rightValue": "=completed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1072,
+        -956
+      ],
+      "id": "c2005c54-cd71-474f-94db-456cf47d6282",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.userId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1512,
+        -716
+      ],
+      "id": "8ef868c3-994b-4c97-8619-4acc78b3bdc5",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2992,
+        -940
+      ],
+      "id": "16307306-2e67-4c9c-88e2-fcd9576a37c6",
+      "name": "Telegram Trigger",
+      "webhookId": "0fad03bc-970d-4d87-8f08-6bd66421d40a",
+      "credentials": {
+        "telegramApi": {
+          "id": "3CzXx0KLqMpprqYT",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7f4afbb6-1753-4432-a7c5-31df3d97283f",
+              "name": "userId",
+              "value": "={{ $('Code in JavaScript').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "23de24c9-0f1c-4da6-b41f-396f43f9bbdd",
+              "name": "conversationStage",
+              "value": "=interview",
+              "type": "string"
+            },
+            {
+              "id": "8b55601b-c4a5-4b66-bde2-956a72b201e9",
+              "name": "questionNumber",
+              "value": "={{ $json.questionNumber || 1 }}",
+              "type": "string"
+            },
+            {
+              "id": "9caaf7c1-cb05-4621-963c-af0a9bf2f313",
+              "name": "userMessage",
+              "value": "={{ $('Code in JavaScript').item.json.userMessage }}",
+              "type": "string"
+            },
+            {
+              "id": "324c7fa3-761e-4fb3-97a5-990d541ba312",
+              "name": "lastActive",
+              "value": "={{ $now }}",
+              "type": "string"
+            },
+            {
+              "id": "e7b43aab-6075-4d9a-804a-f9098b2df511",
+              "name": "conversationHistory",
+              "value": "={{ $json.conversationHistory || \"\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1872,
+        -940
+      ],
+      "id": "c9016893-59ca-4637-85fb-6f163aaeace1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Edit Fields\"].json.userId }}",
+        "text": "={{ $('Interview Agent').item.json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        -1088
+      ],
+      "id": "32a98755-e609-46d5-aad5-70ccc02a7641",
+      "name": "Send a text message",
+      "webhookId": "b6fa39d8-54f9-4777-8d76-dc49e0dd5fab",
+      "credentials": {
+        "telegramApi": {
+          "id": "3CzXx0KLqMpprqYT",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Data Source ki nishandehi (Edit Fields se pichla data uthayein)\nconst stateData = $('Edit Fields').item.json; \nconst agentResponse = $('Interview Agent').first().json.output || \"No response\";\nconst userMessage = $('Telegram Trigger').first().json.text || \"\";\n\n// 2. History handle karein\nlet history = [];\ntry {\n    // Pichli history Edit Fields wale data se uthayein\n    history = JSON.parse(stateData.conversationHistory || \"[]\");\n} catch (e) {\n    history = [];\n}\n\n// 3. History update karein\nhistory.push({ role: 'user', content: userMessage });\nhistory.push({ role: 'assistant', content: agentResponse });\n\n// 4. Counting aur Stage logic (Asli Fix yahan hai)\n// Hum stateData se questionNumber nikal rahe hain jo sheet se aya tha\nlet currentCount = parseInt(stateData.questionNumber) || 0;\nlet nextStage = stateData.conversationStage || \"interview\";\n\n// Agar 12 sawal ho jayen ya AI khatam karde\nif (currentCount >= 12 || agentResponse.includes(\"INTERVIEW_COMPLETE\")) {\n    nextStage = \"analysis\";\n}\n\n// 5. Final Output\nreturn {\n    userId: stateData.userId || \"8146446997\",\n    conversationStage: nextStage,\n    questionNumber: currentCount + 1, // Ab ye 4+1 = 5 karega\n    conversationHistory: JSON.stringify(history),\n    lastActive: new Date().toISOString()\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1296,
+        -940
+      ],
+      "id": "66e06fb0-ab7e-4979-8625-4b3971a2b30b",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70",
+          "mode": "list",
+          "cachedResultName": "DATA BASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userId": "={{ $json.userId }}",
+            "questionNumber": "={{ $json.questionNumber }}\n",
+            "conversationStage": "={{ $json.conversationStage }}",
+            "conversationHistory": "{{ $json.conversationHistory }}",
+            "lastActive": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "userId"
+          ],
+          "schema": [
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "conversationStage",
+              "displayName": "conversationStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "questionNumber",
+              "displayName": "questionNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversationHistory",
+              "displayName": "conversationHistory",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastActive",
+              "displayName": "lastActive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -848,
+        -1088
+      ],
+      "id": "569a695c-275d-4a2b-b7a3-ecee0715f489",
+      "name": "Update row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VNhfS6YTTbCjR12v",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this conversation: {{ $json.conversationHistory }}",
+        "options": {
+          "systemMessage": "=\"You are a Senior Psychological Patterns Analyst.\n\nCORE MISSION: Analyze the 12-question interview and compare it with previous records.\n\nSTRICT LANGUAGE: Use ONLY Roman Urdu or English. No Hindi script.\n\nINPUT DATA: Previous Record: {{ $node[\"Edit Fields\"].json[\"pastWeaknesses\"] || \"First Session\" }} History: {{ $node[\"Code in JavaScript1\"].json[\"conversationHistory\"] }}\n\nSMART FRAMEWORK:\n\nFlip-Side Logic: For every weakness, find the 'Hidden Superpower'.\n\nShadow Analysis: Check if 'Responsible' actually means 'Over-burdened'.\n\nCultural Comparison: Identify if the struggle is Desi (Family/Society) or Global (Individual).\n\nProgress Check: Compare with 'Previous Record' to see if patterns have improved.\n\nOUTPUT FORMAT:\n\nNumbered points (1-10).\n\nPlain text only (No *, #, _).\n\nMax 2500 characters to fit Telegram limits.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -624,
+        -792
+      ],
+      "id": "1a880b32-ea0e-4736-aea0-901ec042553e",
+      "name": "Patterns Analyst Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -272,
+        -792
+      ],
+      "id": "45d34aac-5dcb-4f44-9828-2d4a89977b8a",
+      "name": "Wait",
+      "webhookId": "78dbbeeb-53a4-4944-8b2f-a38dcca1f7c6",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please generate the 7-day transformation plan based on this analysis:\n\n{{ $node[\"Patterns Analyst Agent\"].json.output }}\n\nAlso, check the conversation history to find the user's \"Most Difficult Time\" (Question 11) and anchor the tasks accordingly.",
+        "options": {
+          "systemMessage": "=\"You are a Senior Solution Architect. Create a practical 7-day action plan based on the user's preferred language (English or Roman Urdu) used during the interview.\n\nINPUT ANALYSIS: {{ $node[\"Patterns Analyst Agent\"].json.output }}\n\nSTRICT CONSTRAINTS:\n\nLanguage Consistency: Match the language used in the Analysis. If the user spoke Roman Urdu, provide the plan in Roman Urdu. If English, provide it in English.\n\nNo Hindi: Strictly avoid Hindi vocabulary.\n\nCharacter Limit: Total response MUST be under 4000 characters to avoid Telegram errors.\n\nRoutine Anchoring: Schedule core tasks during the user's 'Most Difficult Time' (identified in Q11).\n\nPLAN STRUCTURE:\n\nThe Sandwich: Start with one encouraging 'Superpower'.\n\nDaily Tasks: Provide a Title, 'The Why' (1 sentence), and 'The How' (step-by-step example).\n\nRULES:\n\nDesi-Friendly: Solutions must be practical for traditional/Desi households.\n\nFormatting: Output as clean Markdown for professional display via the Markdown node.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -48,
+        -792
+      ],
+      "id": "d0d2bd36-ecee-48d3-991c-a2f37bd27ece",
+      "name": "Solution Architect Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Edit Fields').item.json.userId }}",
+        "text": "=your Personality Analysis: {{ $node[\"Patterns Analyst Agent\"].json.output }}\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        -792
+      ],
+      "id": "79ae9fac-0040-4467-b0e3-92bcf5ae0cde",
+      "name": "Send a text message2",
+      "webhookId": "148ad985-ea0f-48b4-8973-1c2c12a2c741",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "3CzXx0KLqMpprqYT",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70",
+          "mode": "list",
+          "cachedResultName": "DATA BASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userId": "{{ $('Edit Fields').item.json.userId }}",
+            "conversationStage": "interview",
+            "questionNumber": "0"
+          },
+          "matchingColumns": [
+            "userId"
+          ],
+          "schema": [
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "conversationStage",
+              "displayName": "conversationStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "questionNumber",
+              "displayName": "questionNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversationHistory",
+              "displayName": "conversationHistory",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastActive",
+              "displayName": "lastActive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2976,
+        -256
+      ],
+      "id": "ac01d210-3aa1-41d0-bc55-9b54800b8001",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VNhfS6YTTbCjR12v",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Edit Fields').item.json.userId }}",
+        "text": "Welcome back",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2752,
+        -256
+      ],
+      "id": "bec0ea3f-c27a-4e6f-b918-13ff05ccee3d",
+      "name": "Send a text message3",
+      "webhookId": "0a882b15-11b0-4a08-8da8-4ccad4924a04",
+      "credentials": {
+        "telegramApi": {
+          "id": "3CzXx0KLqMpprqYT",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70",
+          "mode": "list",
+          "cachedResultName": "DATA BASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userId": "={{ $('Get row(s) in sheet').item.json.userId }}",
+            "conversationStage": "interview",
+            "questionNumber": "0",
+            "conversationHistory": "[]",
+            "PastWeaknesses": "={{ $('Patterns Analyst Agent').item.json.output }}"
+          },
+          "matchingColumns": [
+            "userId"
+          ],
+          "schema": [
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "conversationStage",
+              "displayName": "conversationStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "questionNumber",
+              "displayName": "questionNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversationHistory",
+              "displayName": "conversationHistory",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastActive",
+              "displayName": "lastActive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PastWeaknesses",
+              "displayName": "PastWeaknesses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        -792
+      ],
+      "id": "8328d84b-490a-4cbd-8091-513cda5e7863",
+      "name": "Update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VNhfS6YTTbCjR12v",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.userMessage }}",
+        "options": {
+          "systemMessage": "=\"You are a world-class empathetic psychological interviewer.\n\nCRITICAL FIRST STEP: If the questionNumber is 0 or 1, your first priority is to greet the user and ask for their preferred language: English or Roman Urdu. Once the user chooses, strictly follow that language for the entire session.\n\nSTRICT RULES:\n\nLanguage: Use the user's chosen language (English or Roman Urdu). NEVER use Hindi script or Hindi-specific vocabulary (e.g., No 'Parivaar', use 'Family/Ghar walay'; No 'Sthiti', use 'Halat').\n\nIdentity & Guardrails: You are ONLY a Psychologist. Politely refuse non-psychological topics.\n\nStep-by-Step: Ask exactly ONE question at a time based on questionNumber.\n\nNo Premature Analysis: Never provide a plan before Question 12. If asked, say: 'Humein pehle interview mukammal karna hoga' or 'We must complete the interview first.'\n\nDesi Mode Activation: If terms like 'Joint family' or 'Ammi/Abbu' appear, use cultural empathy (Desi Mode).\n\nCONTEXT: > - Previous Weaknesses: {{ $node[\"Edit Fields\"].json[\"pastWeaknesses\"] || \"None\" }}\n\nQuestion Number: {{ $node[\"Edit Fields\"].json[\"questionNumber\"] }}\n\nINSTRUCTIONS:\n\nAt Question 11, identify their 'Most difficult time of day'.\n\nIf Question Number is 12, end with 'INTERVIEW_COMPLETE'.\n\nTone: Curious and non-judgmental.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1648,
+        -940
+      ],
+      "id": "4d22f91e-7fce-49f9-b699-939ae7930f2f",
+      "name": "Interview Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        976,
+        -792
+      ],
+      "id": "ab4754f6-7e9e-4ff3-b2d3-920018964151",
+      "name": "Wait1",
+      "webhookId": "a93cd24c-e42a-47e4-8a34-d881a155ca81"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Edit Fields').item.json.userId }}",
+        "text": "=Your 7-Day Action Plan: {{ $node[\"Markdown\"].json.data }}.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        -792
+      ],
+      "id": "309f335e-3f85-42e3-84ae-68f657a305b2",
+      "name": "Send a text message4",
+      "webhookId": "ff19dfc2-c359-4f86-9164-0f43a4fcc185",
+      "credentials": {
+        "telegramApi": {
+          "id": "3CzXx0KLqMpprqYT",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1640,
+        -716
+      ],
+      "id": "632b1aec-1775-4706-be29-443ea995c71e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Rmd03KNJOxWi9dNy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite-preview-09-2025",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -552,
+        -568
+      ],
+      "id": "c04ffef8-5273-4d70-a0c6-053a25c2a93e",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Rmd03KNJOxWi9dNy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        24,
+        -568
+      ],
+      "id": "477383f4-fd86-407e-9353-29afbd3e05af",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Rmd03KNJOxWi9dNy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "25c5e374-7be5-4b01-9992-62551ef52911",
+              "leftValue": "={{ $node[\"Get row(s) in sheet\"].json.isEmpty() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2320,
+        -940
+      ],
+      "id": "3f9c2222-9362-473a-98c3-c01e71646dff",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70",
+          "mode": "list",
+          "cachedResultName": "DATA BASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userId": "={{ $node[\"Code in JavaScript\"].json.userId }}",
+            "conversationStage": "=interview",
+            "questionNumber": "=0",
+            "lastActive": "{{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversationStage",
+              "displayName": "conversationStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "questionNumber",
+              "displayName": "questionNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversationHistory",
+              "displayName": "conversationHistory",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastActive",
+              "displayName": "lastActive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PastWeaknesses",
+              "displayName": "PastWeaknesses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2096,
+        -1012
+      ],
+      "id": "cff3c9e9-5cde-432b-b108-31bcf837272b",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VNhfS6YTTbCjR12v",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -848,
+        -792
+      ],
+      "id": "a3da9527-05cc-4e39-abd8-a8a260c077b6",
+      "name": "Wait2",
+      "webhookId": "bfa81e2c-d23d-44f3-9646-dd1704d9818b"
+    },
+    {
+      "parameters": {
+        "html": "=\n{{ $node[\"Solution Architect Agent\"].json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -792
+      ],
+      "id": "00bac7d7-2748-4c97-8c3f-bce5ae0f315d",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -2992,
+        -1312
+      ],
+      "id": "c5ada961-bf7d-4f1f-9ecf-875110cd1b82",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70",
+          "mode": "list",
+          "cachedResultName": "DATA BASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KJ_5YSW2RQOWQyrYFaAJtSn0fYwkM2KX1A7NdQyR70/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2768,
+        -1312
+      ],
+      "id": "161b834b-d0ac-44b5-b7eb-a7b36ee6e96c",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VNhfS6YTTbCjR12v",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0ea4dba2-8648-4a0d-9c40-454942310ede",
+              "leftValue": "={{ $json.questionNumber }}",
+              "rightValue": 12,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "761e898c-9a80-4b1f-8a18-4a7ea312c909",
+              "leftValue": "={{ $json.lastActive }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -2544,
+        -1312
+      ],
+      "id": "ea7a2cd7-3751-4c9d-959b-b0ade9a2d045",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.userId }}",
+        "text": "\"Assalam-o-Alaikum! Aapka Growth Plan 90% tayyar hai. Bas aakhri sawal ka jawab dein taake hum aapki final report generate kar sakein. Hum aapke jawab ka intezar kar rahe hain!\"",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2320,
+        -1312
+      ],
+      "id": "9260b815-d531-4554-b395-c743b5cad24f",
+      "name": "REMINDER MESSAGE.",
+      "webhookId": "ae146963-bdc4-4b41-9560-8fe6b70c9b96",
+      "credentials": {
+        "telegramApi": {
+          "id": "3CzXx0KLqMpprqYT",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Interview Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Interview Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Patterns Analyst Agent": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Solution Architect Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solution Architect Agent": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message2": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Interview Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Patterns Analyst Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Solution Architect Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Patterns Analyst Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "REMINDER MESSAGE.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "a5b51e7a-c024-4fb8-90ce-5421ec486fa6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2ea9c60509852f32d71df5de0651e16c87cde02d8f97773c8d427bf42af4f787"
+  },
+  "id": "lYMdvQLGLJX9tKQw",
+  "tags": []
+}
