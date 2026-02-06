@@ -1,24 +1,74 @@
 
-🤖 AI-Powered Psychological Interviewer & Growth Planner
-This repository contains the professional n8n workflow for an advanced, multi-agent AI system designed to conduct psychological interviews and generate actionable 7-day growth plans.
+🤖 # 👋 Hi, I'm Mehar Sultan
 
-🌟 Key Features
-State-Managed Interviewing: Uses Google Sheets as a persistent database to track questionNumber and conversationHistory.
+🚀 AI Developer | RAG Systems Builder | Automation Engineer  
+🌍 Based in Saudi Arabia  
+🎯 Building AI systems that solve real-world problems  
 
-Automated Reminder System: A Schedule Trigger scans the database daily to identify inactive users and sends automated reminders via Telegram.
+---
 
-Multi-Agent Architecture: Includes a specialized Interview Agent for data collection and a Solution Architect for report generation.
+## 🔥 What I’m Working On
 
-Cultural & Language Intelligence: Supports English and Roman Urdu with a "Desi Mode" to understand cultural nuances like joint family systems.
+- 🤖 RAG-based AI Agents
+- 🧠 AI Psychologist Chatbot
+- 🔗 Multi-agent systems
+- ⚙️ n8n Automation Workflows
+- 📚 LLM + Vector Database integrations
 
-Professional Reporting: Uses Markdown formatting to deliver clean, structured 7-day action plans directly to the user.
+---
 
-🛠️ Technical Workflow
-Triggers: Dual-trigger system using Telegram Trigger (user-led) and Schedule Trigger (system-led).
+## 🧠 My Featured Projects
 
-Logic Engine: Filter Nodes with type-conversion logic ensure reminders are only sent to incomplete sessions.
+### 🟢 RAG AI Agent
+A Retrieval-Augmented Generation chatbot that:
+- Uses document embeddings
+- Retrieves contextual knowledge
+- Generates intelligent responses
 
-Data Sync: Real-time updates to Google Sheets using $now expressions for accurate lastActive tracking.
+🔗 Repository:  
+https://github.com/meharsultann-code/RAG-agent
 
-📁 Files
-CoreAnalyzer.json: The complete n8n workflow file ready for import.
+---
+
+### 🟢 AI Psychologist (n8n Based)
+An automation-driven chatbot system designed to simulate psychological conversation patterns using workflow logic.
+
+---
+
+### 🟢 Multi-Agent AI System
+Multiple AI agents working together for task delegation and contextual decision-making.
+
+---
+
+## 🛠 Tech Stack
+
+- Python
+- Vector Databases
+- n8n
+- Open Source LLMs
+- Git & GitHub
+
+---
+
+## 📈 Current Goals
+
+- Scaling AI automation systems
+- Building production-ready AI tools
+- Creating real-world AI SaaS products
+- Expanding into AI-powered eCommerce systems
+
+---
+
+## 📫 Let’s Connect
+
+If you're interested in:
+- AI Collaboration
+- Automation Projects
+- Building Intelligent Systems
+
+Feel free to connect 🚀
+
+---
+
+⭐ “Building systems today that scale tomorrow.”
+
